@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhizuqiu.demo.mapper.JobMapper">
+
+    <select id="sel" resultType="hashmap" parameterType="com.zhizuqiu.demo.entity.User">
+        select * from job where agentId = #{id}
+    </select>
+
+    <select id="getPack" resultType="hashmap">
+        SELECT jp.id, jp.jobId,p.id packId,p.`name`,p.startTime,p.endTime,p.goalName,p.region,j.school FROM jobpack jp, pack p, job j where jp.jobId = #{jobId} and jp.packId = p.id and jp.jobId = j.id
+    </select>
+
+    <select id="getNum" resultType="INTEGER">
+        SELECT count(*) count FROM jobpack jp, pack p, job j where jp.jobId = #{jobId} and jp.packId = p.id and jp.jobId = j.id and goalName!=""
+    </select>
+
+</mapper>

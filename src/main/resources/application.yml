@@ -1,0 +1,30 @@
+# spring-boot-starter-web
+server:
+  port: 8080
+  servlet:
+    jsp:
+      init-parameters:
+        development: true
+
+spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+  # spring-boot-starter-jdbc
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/jsp-demo?useUniconde=true&characterEncoding=utf-8&serverTimezone=UTC
+    driver-class-name: com.mysql.jdbc.Driver
+
+# mybatis-spring-boot-starter
+mybatis:
+  mapper-locations: classpath:mapping/*Mapper.xml
+  type-aliases-package: com.zhizuqiu.demo.entity
+
+logging:
+  level:
+    com:
+      zhizuqiu:
+        demo: debug

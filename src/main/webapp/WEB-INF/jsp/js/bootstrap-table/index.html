@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="js/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="js/bootstrap-table/bootstrap-table.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+
+            <table id="table"></table>
+
+            <form class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">userName</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="userName"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">passWord</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="passWord"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">realName</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="realName"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button id="submitBtn" type="button" class="btn btn-default btn-primary">提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">userName</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="userNameUpdate"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">passWord</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="passWordUpdate"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">realName</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="realNameUpdate"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    关闭
+                </button>
+                <button id="submitUpdate" type="button" class="btn btn-primary">
+                    提交更改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script src="js/jquery/jquery-3.3.1.min.js"></script>
+<script src="js/bootstrap/js/bootstrap.js"></script>
+<script src="js/bootstrap-table/bootstrap-table.min.js"></script>
+
+
+<script type="text/javascript">
+    var idUpdate;
+    $(function () {
+
+        function operateFormatter(value, row, index) {
+            return [
+                '<a style="cursor:pointer" id="edit" title="修改">修改</a> ',
+                '<a style="cursor:pointer" id="remove"  title="删除">删除</a>'
+            ].join('');
+        }
+
+        window.operateEvents = {
+            'click #edit': function (e, value, row, index) {
+                idUpdate = row.id;
+                $('#userNameUpdate').val(row.userName);
+                $('#passWordUpdate').val(row.passWord);
+                $('#realNameUpdate').val(row.realName);
+
+                $('#myModal').modal('show');
+            },
+            'click #remove': function (e, value, row, index) {
+                $.ajax({
+                    url: "testBoot/deleteUser",
+                    type: "delete",
+                    data: {
+                        id: row.id
+                    },
+                    success: function (e) {
+                        if (e > 0) {
+                            alert("删除成功");
+                            $("#table").bootstrapTable("refresh");
+                        }
+                    }
+                });
+            }
+        };
+
+        $("#submitUpdate").click(function () {
+            if (!$('#passWordUpdate').val() || !$('#realNameUpdate').val() || !$('#userNameUpdate').val()) {
+                alert('输入不能为空');
+                return
+            }
+
+            $.ajax({
+                url: "testBoot/updateUser",
+                type: "post",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    "id": idUpdate,
+                    "passWord": $('#passWordUpdate').val(),
+                    "realName": $('#realNameUpdate').val(),
+                    "userName": $('#userNameUpdate').val()
+                }),
+                success: function (e) {
+                    if (e > 0) {
+                        alert("修改成功");
+                        $("#table").bootstrapTable("refresh");
+                        $('#myModal').modal('hide');
+                    }
+                }
+            });
+        });
+
+        $("#table").bootstrapTable({
+            url: "testBoot/getAllUser",
+            columns: [
+                {
+                    field: 'userName',
+                    title: 'userName',
+                    sortable: true
+                }, {
+                    field: 'passWord',
+                    title: 'passWord'
+                }, {
+                    field: 'realName',
+                    title: 'realName'
+                }, {
+                    field: 'action',
+                    title: '操作',
+                    width: 100,
+                    events: operateEvents,
+                    formatter: operateFormatter
+                }
+            ],
+            sortable: true,
+            sidePagination: "client",
+            pageNumber: 1,
+            pageSize: 5,
+            search: true,
+            uniqueId: "id",
+            pagination: true
+        });
+
+        $("#submitBtn").click(function () {
+            if (!$('#passWord').val() || !$('#realName').val() || !$('#userName').val()) {
+                alert('输入不能为空');
+                return
+            }
+
+            $.ajax({
+                url: "testBoot/addUser",
+                type: "post",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    "passWord": $('#passWord').val(),
+                    "realName": $('#realName').val(),
+                    "userName": $('#userName').val()
+                }),
+                success: function (e) {
+                    if (e > 0) {
+                        alert("提交成功");
+                        $("#table").bootstrapTable("refresh");
+                    }
+                }
+            });
+        });
+
+    });
+</script>
+
+
+</body>
+</html>
