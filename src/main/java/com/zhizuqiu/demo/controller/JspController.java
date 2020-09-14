@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Controller
 @RequestMapping("/")
-public class HelloController {
+public class JspController {
 
     @RequestMapping("/hello")
     public String hello(Model m) {
@@ -36,5 +36,21 @@ public class HelloController {
     public String index() {
         return "index";
     }
+
+    @RequestMapping("/do2")
+    public String doJ2() {
+        return "do2";
+    }
+
+    @RequestMapping("/login2")
+    public String login2() {
+        return "login2";
+    }
+
+    @RequestMapping("/index2")
+    public String index2() {
+        return "index2";
+    }
+
 
 }

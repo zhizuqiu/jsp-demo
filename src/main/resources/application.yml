@@ -17,6 +17,8 @@ spring:
     password: 123456
     url: jdbc:mysql://localhost:3306/jsp-demo?useUniconde=true&characterEncoding=utf-8&serverTimezone=UTC
     driver-class-name: com.mysql.jdbc.Driver
+  resources:
+    static-locations: file:src/main/webapp/WEB-INF/jsp
 
 # mybatis-spring-boot-starter
 mybatis:

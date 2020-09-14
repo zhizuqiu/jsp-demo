@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zhizuqiu.demo.mapper.JobMapper">
+<mapper namespace="com.zhizuqiu.demo.mapper.JdbcMapper">
 
-    <select id="sel" resultType="hashmap" parameterType="com.zhizuqiu.demo.entity.User">
+    <select id="sel" resultType="hashmap" parameterType="INTEGER">
         select * from job where agentId = #{id}
     </select>
 
@@ -12,6 +12,22 @@
 
     <select id="getNum" resultType="INTEGER">
         SELECT count(*) count FROM jobpack jp, pack p, job j where jp.jobId = #{jobId} and jp.packId = p.id and jp.jobId = j.id and goalName!=""
+    </select>
+
+    <select id="list" resultType="hashmap">
+        select * from pack
+    </select>
+
+    <update id="update" parameterType="hashmap">
+        update pack set goalName = #{goalName} where id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="hashmap">
+        delete from pack where id = #{id}
+    </delete>
+
+    <select id="login" parameterType="hashmap" resultType="hashmap">
+        select * from user where phone = #{phone} and password = #{password}
     </select>
 
 </mapper>
